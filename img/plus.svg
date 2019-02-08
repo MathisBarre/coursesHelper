@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 1000 1000">
+  <defs>
+    <style>
+      .cls-1 {
+        filter: url(#filter);
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #000;
+        stroke-width: 132.94px;
+      }
+
+      .cls-3 {
+        font-size: 800px;
+        font-family: Roboto;
+        font-weight: 800;
+      }
+    </style>
+    <filter id="filter" filterUnits="userSpaceOnUse">
+      <feFlood result="flood" flood-color="#fff"/>
+      <feComposite result="composite" operator="in" in2="SourceGraphic"/>
+      <feBlend result="blend" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Groupe_1" data-name="Groupe 1" class="cls-1">
+    <circle class="cls-2" cx="504" cy="511" r="403"/>
+    <text id="_" data-name="+" class="cls-3" x="289.13" y="776.087">+</text>
+  </g>
+</svg>

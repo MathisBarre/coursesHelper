@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css?family=Permanent+Marker|Roboto:300,400,500,700');
+
+html {
+    font-family: "Roboto", sans-serif;
+    font-size: 1.1em;
+}
+
+#header {
+    margin-bottom: 0px;
+    
+    background: #007991; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #007991, #78ffd6); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #007991, #78ffd6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+    color: whitesmoke;
+    
+}
+
+.centerized {
+    margin: auto;
+    max-width: 1500px;
+    padding: 15px;
+}
+
+#brandTitle {
+    font-size: 1.8em;
+    font-weight: 500;
+}
+
+.apps {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.apps:last-child {
+    margin-bottom: 0px;
+}
+
+.appsBar {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    border: black 2px solid;
+    padding: 2px;
+}
+
+.appsBar div {
+    display: flex;
+    align-items: center;
+}
+
+.appsBar div > * {
+    margin: 0px 5px;
+}
+
+.appsBar img {
+    width: 25px;
+}
+
+.settingsIcon,.vIcon  {
+    cursor: pointer;
+}
+
+.barTitle {
+    font-weight: 700;
+}
+
+/* To Do */
+
+#app-toDo {
+    padding: 30px 0px 0px 0px;
+}
+
+#addATaskBtn {
+    cursor: pointer;
+}
+
+.task {
+    margin: 10px -5px;
+    padding: 5px 10px;
+    border-left: black solid 1px;
+}
+
+.titleTask {
+    font-family: "Permanent Marker", sans-serif;
+    font-size: 1.8em;
+    margin: 5px 0px;
+}
+
+.pTask {
+    display: flex;
+    align-items: center;
+}
+
+.counterTask {
+    background: black;
+    display: inline-flex;
+    border-radius: 10% / 50%;
+    color: white;
+    padding: 3px;
+    align-items: center;
+    margin-left: 5px;
+}
+
+.counterTask * {
+    color: white;
+    display: flex;
+    flex-direction: row;
+}
+.counterAction {
+    height: 23px;
+    vertical-align: center;
+    cursor: pointer;
+}
+
+.counterTask span {
+    margin: 0px 5px;
+}
+
+/* GLOBAL ALERT BOX */
+.alertBox {
+    min-width: 500px;
+    min-height: 50px;
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    background: white;
+    transform: translateX(-50%);
+    padding: 5px;
+    border: black 1px solid;
+}
+
+.alertBox .croce {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+}
+
+#removeTask {
+    min-width: 0px;
+    min-height: 0px;
+    transform: none;
+}

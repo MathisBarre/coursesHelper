@@ -1,0 +1,7 @@
+Créer un site web enregistrable avec bdd locale et versionning sur github 
+
+Fonctionnalités :
+	- To do list
+	- Hasardeur (avec options cliquables)
+	- Liens pour nouveau 
+	- Gestion de l'évolution des cours ou des devoirs (nb pages (pdf ou livre)
