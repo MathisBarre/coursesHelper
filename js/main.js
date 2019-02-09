@@ -1,3 +1,4 @@
+// Initialized JSON settings if the user don't have one
 if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos") === undefined || typeof(JSON.parse(localStorage.getItem("appInfos"))) != "object") {
     let obj = {
         "tasksList" : [
@@ -27,7 +28,6 @@ var TasksManager = {
     pTaskInputElt : "",
     showPanel() {
         showAlert("addTaskAlert", function(){
-            // Affichage des données afin d'ajouter une task
             let h1Elt = document.createElement("h1");
             h1Elt.textContent = "Ajouter une tâche";
             h1Elt.style.fontWeight = "bold";
@@ -122,17 +122,19 @@ var TasksManager = {
             const task = JSONappInfos.tasksList[i];
 
             divTaskElt = document.createElement("div");
-            divTaskElt.classList.add("task")
+            divTaskElt.classList.add("task");
+            // Event listener to show a personalized context menu
             divTaskElt.addEventListener("contextmenu", function(e) {
                 e.preventDefault();
                 showAlert("removeTask", function() {
                     let btn = document.createElement("button");
                     btn.textContent = "Supprimer";
+                    // Event listener to remove a task
                     btn.addEventListener("click", function() {
-                        divTaskElt.parentNode.removeChild(divTaskElt);
                         alertBox.parentNode.removeChild(alertBox);
                         JSONappInfos.tasksList.splice(i,1);
                         localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+                        TasksManager.showTasks();
                     });
                     alertBox.appendChild(btn);
                 });
@@ -144,13 +146,14 @@ var TasksManager = {
             titleTaskElt.classList.add("titleTask");
             titleTaskElt.textContent = task.title;
 
-            divTaskElt.appendChild(titleTaskElt)
+            divTaskElt.appendChild(titleTaskElt);
 
             let descTaskElt = document.createElement("p");
             descTaskElt.classList.add("pTask");
             descTaskElt.textContent = task.desc;
-            divTaskElt.appendChild(descTaskElt)
+            divTaskElt.appendChild(descTaskElt);
 
+            // Counter init
             if (task.counter.isActive != false) {
                 let counterElt = document.createElement("span");
                 counterElt.classList.add("counterTask");
