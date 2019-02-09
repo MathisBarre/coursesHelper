@@ -119,7 +119,7 @@ html {
 
 /* GLOBAL ALERT BOX */
 .alertBox {
-    min-width: 500px;
+    min-width: 50px;
     min-height: 50px;
     position: fixed;
     top: 25px;
