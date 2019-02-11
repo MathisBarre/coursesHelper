@@ -1,4 +1,4 @@
-# coursesHelper
+# Courses Helper
 That an app to help you in your learning (initialy developed for french CNED pupils)
 
 
