@@ -136,7 +136,19 @@ var TasksManager = {
                         localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
                         TasksManager.showTasks();
                     });
+
+                    let btn2 = document.createElement("button");
+                    btn2.textContent = "Tout supprimer";
+                    btn2.style.marginRight = "12px";
+                    btn2.addEventListener("click", function (e) {
+                        alert("Êtes-vous vraiment sûr de vouloir tout supprimer ?");
+                        alert("Êtes-vous vraiment vraiment sûr de vous ?");
+                        alert("Bah non, moi j'ai pas envie");
+                        alertBox.parentNode.removeChild(alertBox);
+                    })
+
                     alertBox.appendChild(btn);
+                    alertBox.appendChild(btn2);
                 });
                 alertBox.style.top = e.clientY + "px";
                 alertBox.style.left = e.clientX + "px";
