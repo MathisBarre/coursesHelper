@@ -1,3 +1,12 @@
+/*
+DEVELOPPEMENT BRANCH
+Last modif :
+    - Add mustahce system of templating
+To do :
+    - Add event
+*/
+
+
 // Initialized JSON settings if the user don't have one
 if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos") === undefined || typeof(JSON.parse(localStorage.getItem("appInfos"))) != "object") {
     let obj = {
@@ -5,6 +14,7 @@ if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos"
             {
                 "title" : "Exemple : Terminer les deux derniers exercices du devoirs numéros 3 de physique chimie",
                 "desc" : "CLIQUE DROIT POUR SUPPRIMER",
+                "placeInArray" : "0",
                 "counter" : {
                     "isActive" : true,
                     "suffix" : "devoirs",
@@ -22,6 +32,7 @@ if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos"
 var addBtnElt = document.querySelector("#addATaskBtn");
 var bodyElt = document.querySelector("body");
 var taskBox = document.querySelector("#toDoContent");
+var tasksTemplate = document.querySelector("#toDoContent").innerHTML;
 
 var TasksManager = {
     titleTaskInputElt : "",
@@ -96,7 +107,8 @@ var TasksManager = {
         function taskObject(title,desc,isActive,suffix,nbMax) {
             this.title = title;
             this.desc = desc;
-            this.counter = new counter(isActive,suffix,nbMax)
+            this.placeInArray = JSONappInfos.tasksList.length;
+            this.counter = new counter(isActive,suffix,nbMax);
         }
 
         var taskObject = new taskObject(titleTaskInputElt.value,pTaskInputElt.value)
@@ -110,111 +122,87 @@ var TasksManager = {
         TasksManager.showTasks();
     },
 
-    showTasks() {
+    updateTask() {
         var appInfos = localStorage.getItem("appInfos");
-        console.log("appInfos = " + appInfos)
         var JSONappInfos = JSON.parse(appInfos);
-        console.log(JSONappInfos.tasksList);
-
-        taskBox.innerHTML = "";
 
         for (let i = 0; i < JSONappInfos.tasksList.length; i++) {
-            const task = JSONappInfos.tasksList[i];
+            JSONappInfos.tasksList[i].placeInArray = i;
+            console.log(JSONappInfos.tasksList[i] + "place in array now = " + i);
+        }
 
-            divTaskElt = document.createElement("div");
-            divTaskElt.classList.add("task");
-            // Event listener to show a personalized context menu
-            divTaskElt.addEventListener("contextmenu", function(e) {
-                e.preventDefault();
-                showAlert("removeTask", function() {
-                    let btn = document.createElement("button");
-                    btn.textContent = "Supprimer";
-                    // Event listener to remove a task
-                    btn.addEventListener("click", function() {
-                        alertBox.parentNode.removeChild(alertBox);
-                        JSONappInfos.tasksList.splice(i,1);
-                        localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-                        TasksManager.showTasks();
-                    });
+        localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+    },
 
-                    let btn2 = document.createElement("button");
-                    btn2.textContent = "Tout supprimer";
-                    btn2.style.marginRight = "12px";
-                    btn2.addEventListener("click", function (e) {
-                        alert("Êtes-vous vraiment sûr de vouloir tout supprimer ?");
-                        alert("Êtes-vous vraiment vraiment sûr de vous ?");
-                        alert("Bah non, moi j'ai pas envie");
-                        alertBox.parentNode.removeChild(alertBox);
-                    })
+    showTasks() {
+        // Show tasks
+        var appInfos = localStorage.getItem("appInfos");
+        var JSONappInfos = JSON.parse(appInfos);
+        console.log("appInfos = " + appInfos)
+        console.log(JSONappInfos.tasksList);
 
-                    alertBox.appendChild(btn);
-                    alertBox.appendChild(btn2);
+        let temp = Mustache.render(tasksTemplate,JSONappInfos);
+        taskBox.innerHTML = temp;
+
+        // Add events
+
+        // Event listener to show a personalized context menu
+        divTasksElts = document.querySelectorAll(".task");
+        divTasksElts.forEach(divTask => {
+            divTask.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+            
+            var numOfTask = this.id[this.id.length-1]
+            console.info(numOfTask);
+            showAlert("removeTask", function() {
+
+                let btn = document.createElement("button");
+                btn.textContent = "Supprimer";
+                btn.style.marginRight = "17px";
+
+                // Event listener to remove a task
+                btn.addEventListener("click", function() {
+                    alertBox.parentNode.removeChild(alertBox);
+                    JSONappInfos.tasksList.splice(numOfTask,1);
+                    localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+                    TasksManager.updateTask();
+                    TasksManager.showTasks();
                 });
+                alertBox.appendChild(btn);
                 alertBox.style.top = e.clientY + "px";
                 alertBox.style.left = e.clientX + "px";
             });
+        });
+        });
+        
+        // Event listener to show a personalized context menu
 
-            let titleTaskElt = document.createElement("h3");
-            titleTaskElt.classList.add("titleTask");
-            titleTaskElt.textContent = task.title;
-
-            divTaskElt.appendChild(titleTaskElt);
-
-            let descTaskElt = document.createElement("p");
-            descTaskElt.classList.add("pTask");
-            descTaskElt.textContent = task.desc;
-            divTaskElt.appendChild(descTaskElt);
-
-            // Counter init
-            if (task.counter.isActive != false) {
-                let counterElt = document.createElement("span");
-                counterElt.classList.add("counterTask");
-
-                let spanCount = document.createElement("span");
-                spanCount.textContent = task.counter.nb;
-                
-                let spanCounterSuffix = document.createElement("span");
-                spanCounterSuffix.textContent = task.counter.suffix + " / " + task.counter.nbMax;
-
-                let imgMinusElt = document.createElement("img");
-                imgMinusElt.classList.add("counterMinus","counterAction");
-                imgMinusElt.src = "img/minus.svg";
-                imgMinusElt.alt = "Action enlever une itération";
-                imgMinusElt.addEventListener("click", function() {
-                    let nb = Number(spanCount.textContent);
-                    if (nb - 1 >= 0 ) {
-                        spanCount.textContent = nb-1;
-                        JSONappInfos.tasksList[i].counter.nb -= 1 ;
-                        localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-                    }
-                })
-                
-                let imgPlusElt = document.createElement("img");
-                imgPlusElt.classList.add("counterPlus","counterAction");
-                imgPlusElt.src = "img/plus.svg";
-                imgPlusElt.alt = "Action ajouter une itération";
-                imgPlusElt.addEventListener("click", function() {
-                    let nb = Number(spanCount.textContent);
-                    if (nb + 1 <= task.counter.nbMax ) {
-                        spanCount.textContent = nb+1;
-                        JSONappInfos.tasksList[i].counter.nb += 1 ;
-                        localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-                    }
-                })
-
-                counterElt.appendChild(imgMinusElt);
-                counterElt.appendChild(spanCount);
-                counterElt.appendChild(spanCounterSuffix);
-                counterElt.appendChild(imgPlusElt);
-                descTaskElt.appendChild(counterElt);
+        // Counter event
+        /*
+        imgMinusElt.addEventListener("click", function() {
+            let nb = Number(spanCount.textContent);
+            if (nb - 1 >= 0 ) {
+                spanCount.textContent = nb-1;
+                JSONappInfos.tasksList[i].counter.nb -= 1 ;
+                localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
             }
-
-            taskBox.appendChild(divTaskElt);
-        }
-
+        })
+        
+        imgPlusElt.addEventListener("click", function() {
+            let nb = Number(spanCount.textContent);
+            if (nb + 1 <= task.counter.nbMax ) {
+                spanCount.textContent = nb+1;
+                JSONappInfos.tasksList[i].counter.nb += 1 ;
+                localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+            }
+        });
+        */
     }
 }
 
 addBtnElt.addEventListener("click", TasksManager.showPanel);
-
 TasksManager.showTasks();
+
+            
+
+            

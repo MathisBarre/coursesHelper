@@ -14,6 +14,11 @@
             <h1 id="brandTitle">CNED webHelper</h1>
         </div>
     </header>
+    <noscript>
+        <div class="warningBox centerized">
+            <p>Ce site ne peut pas marcher sans Javascript, veuillez activer le Javascript ou mettre à jour votre navigateur</p>
+        </div>
+    </noscript>
     <main id="mainBox" class="centerized">
         <section class="apps" id="app-toDo">
              <div class="appsBar">
@@ -28,25 +33,27 @@
                 </div>
              </div>
              <div id="toDoContent">
-                 <!--div class="task">
-                     <h1 class="titleTask">Terminer le devoirs numéros 3 de physique chimie</h1>
-                     <p class="pTask">Exercices 3-4</p>
-                 </div>
-                 <div class="task">
-                    <h1 class="titleTask">Terminer tous les devoirs de maths</h1>
-                    <p class="pTask">
-                        Soit 6 devoirs
-                        <span class="counterTask">
+                 {{#tasksList}}
+                 <div class="task" id="task {{placeInArray}}">
+                     <h3 class="titleTask">{{title}}</h3>
+                     <p class="pTask">
+                         {{desc}}
+                         {{#counter.isActive}}
+                         <span class="counterTask">
                             <img src="img/minus.svg" alt="action supprimer" class="counterMinus counterAction">
-                            <span>5 devoirs / 15</span>
+                            <span>{{counter.nb}} {{counter.suffix}} / {{counter.nbMax}}</span>
                             <img src="img/plus.svg" alt="action ajouter" class="counterPlus counterAction">
                         </span>
+                        {{/counter.isActive}}
                     </p>
-                </div-->
+                 </div>
+                 {{/tasksList}}
              </div>
         </section>
     </main>
     <script src="js/libs/myLibs.js"></script>
+    <script src="js/libs/mustache.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
+

@@ -65,6 +65,15 @@ html {
     font-weight: 700;
 }
 
+/* warningBox */
+
+.warningBox {
+    padding: 10px;
+    margin: 10px auto;
+    color: red;
+    border: solid red 2px;
+}
+
 /* To Do */
 
 #app-toDo {
