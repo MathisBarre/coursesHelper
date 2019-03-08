@@ -1,14 +1,12 @@
 /*
 DEVELOPPEMENT BRANCH
-Last modif :
-    - Add mustahce system of templating
-To do :
-    - Add event
 */
 
 
 // Initialized JSON settings if the user don't have one
-if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos") === undefined || typeof(JSON.parse(localStorage.getItem("appInfos"))) != "object") {
+if (localStorage.getItem("appInfos") === null || 
+    localStorage.getItem("appInfos") === undefined || 
+    typeof(JSON.parse(localStorage.getItem("appInfos"))) != "object") {
     let obj = {
         "tasksList" : [
             {
@@ -23,6 +21,15 @@ if (localStorage.getItem("appInfos") === null || localStorage.getItem("appInfos"
                 },
             },
         ],
+        "subjectsList" : [
+            "français",
+            "espagnol",
+            "anglais",
+            "histoire-géographie",
+            "science de la vie et de la terre",
+            "physique-chimie",
+            "mathématiques",
+        ],
     };
     localStorage.setItem("appInfos" ,JSON.stringify(obj));
     console.log("local storage appInfos initialized")
@@ -33,67 +40,46 @@ var addBtnElt = document.querySelector("#addATaskBtn");
 var bodyElt = document.querySelector("body");
 var taskBox = document.querySelector("#toDoContent");
 var tasksTemplate = document.querySelector("#toDoContent").innerHTML;
+var addTaskAlertElt = document.querySelector("#addTaskAlert");
+var removeTaskAlertElt = document.querySelector("#removeTaskAlert");
 
 var TasksManager = {
-    titleTaskInputElt : "",
-    pTaskInputElt : "",
     showPanel() {
-        showAlert("addTaskAlert", function(){
-            let h1Elt = document.createElement("h1");
-            h1Elt.textContent = "Ajouter une tâche";
-            h1Elt.style.fontWeight = "bold";
-            h1Elt.style.textAlign = "center";
-            h1Elt.style.marginBottom = "5px"
-            alertBox.appendChild(h1Elt)
+        addTaskAlertElt.style.display = "block";
 
-            let formElt = document.createElement("form");
+        addTaskAlertElt.querySelector(".croce").addEventListener("click", function (e) {
+            addTaskAlertElt.style.display = "none";
+        })
+        var counterCheckboxElt = document.querySelector("#isCounterActive");
+        counterCheckboxElt.checked = false;
+        counterCheckboxElt.onchange = function () {
+            var counterOptionsElt = document.querySelector(".counterOptions");
+            if (counterCheckboxElt.checked) {
+                counterOptionsElt.style.display = "block";
+            } else {
+                counterOptionsElt.style.display = "none";
+            }
+        }
+        
+        addTaskAlertElt.querySelector("input[type=submit]").addEventListener("click", TasksManager.addTask);
 
-            let titleTaskLabelElt = document.createElement("label");
-            titleTaskLabelElt.setAttribute("for","titleTaskInput");
-            titleTaskLabelElt.textContent = "Titre de la tâche : ";
-            formElt.appendChild(titleTaskLabelElt);
-
-            titleTaskInputElt = document.createElement("input");
-            titleTaskInputElt.type = "text";
-            titleTaskInputElt.id = "titleTaskInput";
-            formElt.appendChild(titleTaskInputElt);
-           
-
-            let brElt = document.createElement("br");
-            formElt.appendChild(brElt);
-
-            let pTaskLabelElt = document.createElement("label");
-            pTaskLabelElt.textContent = "Description de la tâche : ";
-            pTaskLabelElt.setAttribute("for","pTaskInput");
-            formElt.appendChild(pTaskLabelElt)
-
-            pTaskInputElt = document.createElement("input");
-            pTaskInputElt.type = "text";
-            formElt.appendChild(pTaskInputElt);
-
-            let br1Elt = document.createElement("br");
-            formElt.appendChild(br1Elt);
-
-            let submitInputElt = document.createElement("input");
-            submitInputElt.type = "submit";
-            submitInputElt.addEventListener("click",TasksManager.addTask);
-            formElt.appendChild(submitInputElt);
-            
-            alertBox.appendChild(formElt);
-
-            
-        });
-        titleTaskInputElt.focus();
+        document.querySelector("#titleTaskInput").focus();
     },
 
     addTask(e) {
         e.preventDefault();
 
+        let titleTaskInputElt = addTaskAlertElt.querySelector("#titleTaskInput");
+        let pTaskInputElt = addTaskAlertElt.querySelector("#pTaskInput");
+        let counterNbMaxTaskInputElt = addTaskAlertElt.querySelector("#counterNbMax");
+        let counterSuffixTaskInputElt = addTaskAlertElt.querySelector("#counterSuffix");
+        let counterActiveTaskInputElt = addTaskAlertElt.querySelector("#isCounterActive");
+
         var appInfos = localStorage.getItem("appInfos");
         var JSONappInfos = JSON.parse(appInfos);
 
         function counter(isActive,suffix,nbMax) {
-            if (isActive != null) {
+            if (isActive != null && nbMax > 0) {
                 this.isActive = isActive;
                 this.suffix = suffix;
                 this.nbMax = nbMax;
@@ -111,13 +97,24 @@ var TasksManager = {
             this.counter = new counter(isActive,suffix,nbMax);
         }
 
-        var taskObject = new taskObject(titleTaskInputElt.value,pTaskInputElt.value)
-        JSONappInfos.tasksList.push(taskObject);
-        localStorage.setItem("appInfos",JSON.stringify(JSONappInfos));
-
-        titleTaskInputElt.value = "";
-        titleTaskInputElt.focus();
-        pTaskInputElt.value = "";
+        if (titleTaskInputElt.value != "" || pTaskInputElt.value != "") {
+            var taskObject = new taskObject(
+                titleTaskInputElt.value,
+                pTaskInputElt.value,
+                counterActiveTaskInputElt.value,
+                counterSuffixTaskInputElt.value,
+                counterNbMaxTaskInputElt.value
+                );
+            JSONappInfos.tasksList.push(taskObject);
+            localStorage.setItem("appInfos",JSON.stringify(JSONappInfos));
+    
+            titleTaskInputElt.value = "";
+            pTaskInputElt.value = "";
+            counterSuffixTaskInputElt.value = "";
+            counterNbMaxTaskInputElt.value = "";
+        } else {
+            alert("La tâche est vide");
+        }
 
         TasksManager.showTasks();
     },
@@ -128,7 +125,7 @@ var TasksManager = {
 
         for (let i = 0; i < JSONappInfos.tasksList.length; i++) {
             JSONappInfos.tasksList[i].placeInArray = i;
-            console.log(JSONappInfos.tasksList[i] + "place in array now = " + i);
+
         }
 
         localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
@@ -138,13 +135,13 @@ var TasksManager = {
         // Show tasks
         var appInfos = localStorage.getItem("appInfos");
         var JSONappInfos = JSON.parse(appInfos);
-        console.log("appInfos = " + appInfos)
-        console.log(JSONappInfos.tasksList);
+
+        
 
         let temp = Mustache.render(tasksTemplate,JSONappInfos);
         taskBox.innerHTML = temp;
 
-        // Add events
+        /* Add events */
 
         // Event listener to show a personalized context menu
         divTasksElts = document.querySelectorAll(".task");
@@ -153,56 +150,100 @@ var TasksManager = {
             e.preventDefault();
             
             var numOfTask = this.id[this.id.length-1]
-            console.info(numOfTask);
-            showAlert("removeTask", function() {
 
-                let btn = document.createElement("button");
-                btn.textContent = "Supprimer";
-                btn.style.marginRight = "17px";
+            removeTaskAlertElt.style.display = "block";
+            removeTaskAlertElt.style.top = e.clientY + "px";
+            removeTaskAlertElt.style.left = e.clientX + "px";
 
-                // Event listener to remove a task
-                btn.addEventListener("click", function() {
-                    alertBox.parentNode.removeChild(alertBox);
-                    JSONappInfos.tasksList.splice(numOfTask,1);
-                    localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-                    TasksManager.updateTask();
-                    TasksManager.showTasks();
-                });
-                alertBox.appendChild(btn);
-                alertBox.style.top = e.clientY + "px";
-                alertBox.style.left = e.clientX + "px";
+            // Event listener to remove a task
+            removeTaskAlertElt.querySelector(".btnRemoveTask").addEventListener("click", function() {
+                removeTaskAlertElt.style.display = "none";
+                JSONappInfos.tasksList.splice(numOfTask,1);
+                localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+                TasksManager.updateTask();
+                TasksManager.showTasks();
+            });
+            removeTaskAlertElt.querySelector(".croce").addEventListener("click", function () {
+                removeTaskAlertElt.style.display = "none";
+            });
+
             });
         });
-        });
         
-        // Event listener to show a personalized context menu
+        
 
         // Counter event
-        /*
-        imgMinusElt.addEventListener("click", function() {
-            let nb = Number(spanCount.textContent);
-            if (nb - 1 >= 0 ) {
-                spanCount.textContent = nb-1;
-                JSONappInfos.tasksList[i].counter.nb -= 1 ;
-                localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-            }
-        })
-        
-        imgPlusElt.addEventListener("click", function() {
-            let nb = Number(spanCount.textContent);
-            if (nb + 1 <= task.counter.nbMax ) {
-                spanCount.textContent = nb+1;
-                JSONappInfos.tasksList[i].counter.nb += 1 ;
-                localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
-            }
+        imgMinusElts = document.querySelectorAll(".counterMinus");
+        imgMinusElts.forEach(imgMinusElt => {
+
+            imgMinusElt.addEventListener("click", function() {
+                let taskEltId = this.parentNode.parentNode.parentNode.id;
+                let i = taskEltId[taskEltId.length-1]
+                let spanCountElt = this.parentNode.querySelector(".spanCount");
+                let nb = Number(spanCountElt.textContent);
+
+                if (nb - 1 >= 0 ) {
+                    spanCountElt.textContent = nb-1;
+                    JSONappInfos.tasksList[i].counter.nb -= 1 ;
+                    localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+                }
+
+            })
         });
-        */
+        
+        imgPlusElts = document.querySelectorAll(".counterPlus")
+        imgPlusElts.forEach(imgPlusElt => {
+
+            imgPlusElt.addEventListener("click", function() {
+
+                let taskEltId = this.parentNode.parentNode.parentNode.id;
+                let i = taskEltId[taskEltId.length-1]
+                let spanCountElt = this.parentNode.querySelector(".spanCount");
+                let nb = Number(spanCountElt.textContent);
+
+                if (nb + 1 <= JSONappInfos.tasksList[i].counter.nbMax ) {
+                    spanCountElt.textContent = nb+1;
+                    JSONappInfos.tasksList[i].counter.nb += 1 ;
+                    localStorage.setItem("appInfos", JSON.stringify(JSONappInfos));
+                }
+
+            });
+        });
+        
     }
 }
 
 addBtnElt.addEventListener("click", TasksManager.showPanel);
 TasksManager.showTasks();
-
+/* END TO DO JS */
             
+/* Randomizator */
 
+document.querySelector("#randomize").addEventListener("click",function (e) {
+
+    JSONappInfos = localStorage.getItem("appInfos");
+    var subjectsList = JSON.parse(JSONappInfos).subjectsList;
+
+    randomNumber = Math.floor(Math.random() * Math.floor(subjectsList.length-1));
+    alert("Go faire : " + subjectsList[randomNumber]);
+})
+
+var randomSettingsElt = document.querySelector("#randomizerSettings");
+randomSettingsElt.addEventListener("click", function (e) {
+
+    JSONappInfos = localStorage.getItem("appInfos");
+    var subjectsList = JSON.parse(JSONappInfos).subjectsList;
+
+    let textarea = document.querySelector("#randomizeurSettingsTextarea");
+    textarea.value = subjectsList;
+
+    var settingsBoxElt = document.querySelector("#randomizerSettingsBox");
+    settingsBoxElt.style.display = "block";
+
+    
+})
+document.querySelector("#sendRandomizerInfos").onclick = function (e) {
+        e.preventDefault();
+
+    }
             

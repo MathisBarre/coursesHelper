@@ -10,8 +10,15 @@
 </head>
 <body>
     <header id="header">
-        <div class="centerized">
-            <h1 id="brandTitle">CNED webHelper</h1>
+        <div class="centerized" id="topbar">
+            <div class="brand">
+                <h1 id="brandTitle">CNED webHelper</h1>
+                <span>Par Mathis.B</span>
+            </div>
+            <div class="appsBar" id="randomizer">
+                <span id="randomize">Randomizer</span>
+                <img src="img/settingsWhite.svg" alt="options" id="randomizerSettings">
+            </div>
         </div>
     </header>
     <noscript>
@@ -41,7 +48,7 @@
                          {{#counter.isActive}}
                          <span class="counterTask">
                             <img src="img/minus.svg" alt="action supprimer" class="counterMinus counterAction">
-                            <span>{{counter.nb}} {{counter.suffix}} / {{counter.nbMax}}</span>
+                            <span><span class="spanCount">{{counter.nb}}</span> {{counter.suffix}} / {{counter.nbMax}}</span>
                             <img src="img/plus.svg" alt="action ajouter" class="counterPlus counterAction">
                         </span>
                         {{/counter.isActive}}
@@ -51,6 +58,43 @@
              </div>
         </section>
     </main>
+
+    <!-- TEMPLATES-->
+    <div class="alertBox" id="addTaskAlert" style="display:none">
+        <a class="croce">✘</a>
+        <h1>Ajouter une tâche</h1>
+        <form>
+            <label for="titleTaskInput">Titre de la tâche</label>
+            <input type="text" name="titleTaskInput" id="titleTaskInput"><br>
+            <label for="pTaskInput">Description de la tâches</label>
+            <input type="text" name="pTaskInput" id="pTaskInput"><br>
+            <label for="isCounterActive">Compteur</label>
+            <input type="checkbox" name="isCounterActive" id="isCounterActive"><br>
+            <div class="counterOptions" style="display:none">
+                <label for="counterSuffix">Suffix</label>
+                <input type="text" name="suffix" id="counterSuffix"><br>
+                <label for="counterNbMax">Nombre max d'itérations</label>
+                <input type="text" name="nbMax" id="counterNbMax">
+            </div>
+            <input type="submit" value="Envoyer">
+        </form>
+    </div>
+
+    <div class="alertBox" id="removeTaskAlert" style="display:none">
+        <a class="croce">✘</a>
+        <button class="btnRemoveTask">Supprimer</button>
+    </div>
+
+    <div class="alertBox" id="randomizerSettingsBox" style="display:none">
+        <a class="croce">✘</a>
+        <form>
+            <textarea  id="randomizeurSettingsTextarea" cols="30" rows="10"></textarea><br>
+            <button id="sendRandomizerInfos">Enregistrer les modifications</button>
+        </form>
+    </div>
+
+    <!-- TEMPLATES-->
+
     <script src="js/libs/myLibs.js"></script>
     <script src="js/libs/mustache.min.js"></script>
     <script src="js/main.js"></script>

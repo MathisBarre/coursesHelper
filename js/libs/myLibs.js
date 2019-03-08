@@ -1,4 +1,4 @@
-var alertBox;
+/*var alertBox;
 
 function showAlert(idAlert, func){
     if (document.querySelector(".alertBox") != null) {
@@ -12,7 +12,7 @@ function showAlert(idAlert, func){
 
     var croceElt = document.createElement("a");
     croceElt.classList.add("croce");
-    croceElt.textContent = "✘";
+    croceElt.textContent = "x";
     croceElt.addEventListener("click", function (e) {
         alertBox.parentNode.removeChild(alertBox);
     })
@@ -21,4 +21,4 @@ function showAlert(idAlert, func){
 
     func()
     bodyElt.appendChild(alertBox);
-}
+}*/

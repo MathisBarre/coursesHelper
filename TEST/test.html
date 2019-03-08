@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <form>
+            <label for="nbPagesRemaining">Nombre de pages restantes : </label>
+            <input type="text" name="nbPagesRemaining" id="nbPagesRemaining"><br>
+            <label for="endDayWanted">Jour de fin voulu</label>
+            <input type="date" name="endDayWanted" id="endDayWanted">
+            <button id="sendPagesInfos">Envoyer</button>
+        </form>
+        <p id="result"></p>
+    </main>
+    <script>
+        
+
+        inputNbPagesRemainingElt = document.getElementById("nbPagesRemaining");
+        inputEndDayWantedElt = document.getElementById("endDayWanted");
+        btnElt = document.getElementById("sendPagesInfos");
+        mainElt = document.querySelector("main");
+
+        btnElt.onclick = function (e) {
+            e.preventDefault();
+
+            
+            var nbPagesRemaining = inputNbPagesRemainingElt.value;
+            var endDate = new Date(inputEndDayWantedElt.value);
+            var currentDate = new Date(Date.now())
+
+            const dayOfTheWeek = [7,1,2,3,4,5,6];
+            var currentDay = dayOfTheWeek[currentDate.getDay()];
+            var endDay = dayOfTheWeek[endDate.getDay()];
+
+            var UTCdiff = endDate.getTime() - currentDate.getTime();
+            var diffDay = Math.ceil(UTCdiff / 1000 / 60 / 60 / 24);
+            var diffWeek = Math.floor(diffDay / 7);
+            var nbWeekEnd = Math.floor((diffDay - (currentDay) ) / 7 +1)
+            console.log("nbweekend " + nbWeekEnd)
+            var nbJourRest = (diffDay - nbWeekEnd*2)
+            if (endDay === 6) {
+                nbJourRest -= 1;
+            } else if (endDay === 7) {
+                nbJourRest = nbJourRest - 2;
+            }
+            console.log(endDay)
+            console.log(nbJourRest);
+
+            document.querySelector("#result").textContent = "Si vous voulez terminer dans les temps il faudra faire " + ( Math.ceil(nbPagesRemaining / nbJourRest) ) + " pages par jour ( "+ (nbPagesRemaining / nbJourRest) +" ) , 5 jours par semaines";
+
+        }
+    </script>
+</body>
+</html>
