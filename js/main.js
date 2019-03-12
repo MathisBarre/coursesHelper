@@ -224,15 +224,15 @@ document.querySelector("#randomize").addEventListener("click",function (e) {
     JSONappInfos = localStorage.getItem("appInfos");
     var subjectsList = JSON.parse(JSONappInfos).subjectsList;
 
-    randomNumber = Math.floor(Math.random() * Math.floor(subjectsList.length-1));
+    randomNumber = Math.floor(Math.random() * Math.floor(subjectsList.length));
     alert("Go faire : " + subjectsList[randomNumber]);
 })
 
 var randomSettingsElt = document.querySelector("#randomizerSettings");
 randomSettingsElt.addEventListener("click", function (e) {
 
-    JSONappInfos = localStorage.getItem("appInfos");
-    var subjectsList = JSON.parse(JSONappInfos).subjectsList;
+    var JSONappInfos = localStorage.getItem("appInfos");
+    let subjectsList = JSON.parse(JSONappInfos).subjectsList;
 
     let textarea = document.querySelector("#randomizeurSettingsTextarea");
     textarea.value = subjectsList;
@@ -240,10 +240,20 @@ randomSettingsElt.addEventListener("click", function (e) {
     var settingsBoxElt = document.querySelector("#randomizerSettingsBox");
     settingsBoxElt.style.display = "block";
 
+    settingsBoxElt.querySelector(".croce").onclick = function() {
+        settingsBoxElt.style.display = "none";
+    }
     
 })
 document.querySelector("#sendRandomizerInfos").onclick = function (e) {
-        e.preventDefault();
-
-    }
+    e.preventDefault();
+    let textarea = document.querySelector("#randomizeurSettingsTextarea");
+    let subjectsList = textarea.value;
+    var JSONappInfos = localStorage.getItem("appInfos");
+    JSONparseInfos = JSON.parse(JSONappInfos)
+    JSONparseInfos.subjectsList = subjectsList.split(",");
+    localStorage.setItem("appInfos" ,JSON.stringify(JSONparseInfos));
+    var settingsBoxElt = document.querySelector("#randomizerSettingsBox");
+    settingsBoxElt.style.display = "none";
+}
             
